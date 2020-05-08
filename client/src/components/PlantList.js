@@ -4,10 +4,9 @@ import axios from "axios";
 export default class PlantList extends Component {
   // add state with a property called "plants" - initialize as an empty array
   state = {
-    plants: []
+    plants: [],
+    term: ''
   };
-
-
   componentDidMount() {
     axios
       .get('http://localhost:3333/plants')
@@ -17,6 +16,7 @@ export default class PlantList extends Component {
       })
       .catch(err => console.log(err));
   }
+
   // when the component mounts:
   //   - fetch data from the server endpoint - http://localhost:3333/plants
   //   - set the returned plants array to this.state.plants
@@ -25,7 +25,16 @@ export default class PlantList extends Component {
   render() {
     return (
       <main className="plant-list">
-        {this.state?.plants?.map((plant) => (
+        <input
+          placeholder="Filter Plants"
+          value={this.state.term}
+          onChange={(e) => {
+            this.setState({ term: e.target.value })
+          }}
+         />
+        {this.state?.plants?.filter(plant => {
+          return plant.name.toLowerCase().includes(this.state.term.toLowerCase());
+        }).map((plant) => (
           <div className="plant-card" key={plant.id}>
             <img className="plant-image" src={plant.img} alt={plant.name} />
             <div className="plant-details">
